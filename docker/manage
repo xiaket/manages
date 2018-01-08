@@ -1,0 +1,49 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+image_name=abc
+tag=latest
+
+# feature definitions here
+build (){
+  image=`docker build . | tail -n 1 | awk '{print $NF}'`
+  docker tag $image $image_name:$tag
+}
+
+run () {
+  docker run -it --env-file env $image_name
+}
+
+inception () {
+  name=`docker ps -a | grep Up | grep $image_name | awk '{print $NF}'`
+  docker exec -it "$name" /bin/bash
+}
+
+clean (){
+  if `docker ps -a | grep -q Exited`
+  then
+    docker ps -a | grep Exited | awk '{print $1}' | xargs docker rm
+  fi
+  if docker images | grep -q "^<none>"
+  then
+    docker images | grep "^<none>" | awk '{print $3}' | xargs docker rmi
+  fi
+}
+
+
+# main starts here
+command=${1:-""}
+
+if [ -n "$(type -t $command)" ] && [ "$(type -t $command)" = function ]
+then
+  eval $command
+  exit $?
+fi
+
+case "$command" in
+  *)
+    clean
+esac
