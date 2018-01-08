@@ -1,0 +1,13 @@
+sync () {
+  src="."
+  dst="remotehost:/remote_dir_path/"
+
+  rsync -navc --exclude .git -e ssh "$src" "$dst"
+
+  read -p "Are you sure? (y/n) " -n 1 -r
+  echo
+  if [[ $REPLY =~ ^[Yy]$ ]]
+  then
+    rsync -avc --exclude .git -e ssh "$src" "$dst"
+  fi
+}
