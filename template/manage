@@ -1,0 +1,41 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+
+# define tasks here
+build (){
+  echo "do build here"
+}
+
+run () {
+  echo "do run here"
+}
+
+clean (){
+  echo "do clean here"
+}
+
+spec (){
+  echo "do special things here"
+}
+
+
+# main start here
+command=${1:-""}
+
+if [ -n "$(type -t $command)" ] && [ "$(type -t $command)" = function ]
+then
+  eval $command
+  exit $?
+fi
+
+case "$command" in
+  special_feature)
+    spec
+  ;;
+  *)
+    clean
+esac
