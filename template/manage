@@ -18,10 +18,9 @@ clean (){
   echo "do clean here"
 }
 
-spec (){
-  echo "do special things here"
+list () {
+  grep -E "()\ ?{$" $0 | grep -v 'grep ' | awk '{print $1}' | sort
 }
-
 
 # main start here
 command=${1:-""}
@@ -33,8 +32,8 @@ then
 fi
 
 case "$command" in
-  special_feature)
-    spec
+  ls)
+    list
   ;;
   *)
     clean
