@@ -27,14 +27,12 @@ command=${1:-""}
 
 if [ -n "$(type -t $command)" ] && [ "$(type -t $command)" = function ]
 then
-  eval $command
+  shift
+  eval $command "$@"
   exit $?
 fi
 
 case "$command" in
-  ls)
-    list
-  ;;
   *)
-    clean
+    list
 esac
