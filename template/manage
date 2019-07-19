@@ -19,16 +19,16 @@ clean (){
 }
 
 list () {
-  grep -E "()\ ?{$" $0 | grep -v 'grep ' | awk '{print $1}' | sort
+  grep -E "()\ ?{$" "$0" | grep -v 'grep ' | awk '{print $1}' | sort
 }
 
 # main start here
 command=${1:-""}
 
-if [ -n "$(type -t $command)" ] && [ "$(type -t $command)" = function ]
+if [[ -n $(type -t "${command}") ]] && [[ $(type -t "${command}") = function ]]
 then
   shift
-  eval $command "$@"
+  eval "$command" "$@"
   exit $?
 fi
 
